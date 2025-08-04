@@ -1,13 +1,18 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+import os
 
 # Import mock services
 from services.mock_services import initialize_mock_services
+
+# Import routers
+from routers.community_reports import router as community_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -25,10 +30,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files for image serving
+uploads_dir = "uploads"
+if not os.path.exists(uploads_dir):
+    os.makedirs(uploads_dir, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
+
 # Initialize services once
 print("Loading mock services...")
 services = initialize_mock_services()
 print("Mock services loaded successfully!")
+
+# Include routers
+app.include_router(community_router, prefix="/api/community", tags=["community-reports"])
 
 # Request models
 class MisinformationRequest(BaseModel):
@@ -63,6 +77,8 @@ async def root():
             "live_weather": "/api/live/weather/current",
             "satellite_imagery": "/api/live/satellite/disaster-imagery",
             "disaster_intelligence": "/api/live/combined/disaster-intelligence",
+            "community_reports": "/api/community/submit",
+            "community_map": "/api/community/reports",
             "health_check": "/health"
         }
     }
