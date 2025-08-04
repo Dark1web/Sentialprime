@@ -5,7 +5,7 @@ import uvicorn
 from contextlib import asynccontextmanager
 
 # Import routers
-from routers import misinformation, triage, network, factcheck, navigation, live_data
+from routers import misinformation, triage, network, factcheck, navigation, live_data, advanced_features
 
 # Global state for ML models
 ml_models = {}
@@ -57,6 +57,7 @@ app.include_router(network.router, prefix="/api/network", tags=["network"])
 app.include_router(factcheck.router, prefix="/api/factcheck", tags=["factcheck"])
 app.include_router(navigation.router, prefix="/api/navigation", tags=["navigation"])
 app.include_router(live_data.router, prefix="/api/live", tags=["live-data"])
+app.include_router(advanced_features.router, prefix="/api/advanced", tags=["advanced-features"])
 
 @app.get("/")
 async def root():
