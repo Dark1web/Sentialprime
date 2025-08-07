@@ -18,7 +18,7 @@ import {
   CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
 
-const AlertsOverview = ({ alerts }) => {
+const AlertsOverview = ({ alerts, recentAlerts }) => {
   const alertTypes = [
     { 
       key: 'critical', 
@@ -51,37 +51,6 @@ const AlertsOverview = ({ alerts }) => {
   ];
 
   const totalAlerts = alertTypes.reduce((sum, type) => sum + type.count, 0);
-
-  const recentAlerts = [
-    {
-      id: 1,
-      title: 'Flood Warning - Riverside District',
-      severity: 'critical',
-      time: '2 mins ago',
-      location: 'Riverside, Delhi'
-    },
-    {
-      id: 2,
-      title: 'Misinformation Detected - Dam Burst',
-      severity: 'high',
-      time: '5 mins ago',
-      location: 'Social Media'
-    },
-    {
-      id: 3,
-      title: 'Network Outage - Tech Park',
-      severity: 'medium',
-      time: '12 mins ago',
-      location: 'Bangalore'
-    },
-    {
-      id: 4,
-      title: 'Emergency Shelter Request',
-      severity: 'high',
-      time: '18 mins ago',
-      location: 'Mumbai Suburban'
-    }
-  ];
 
   const getSeverityColor = (severity) => {
     switch (severity) {
@@ -132,7 +101,7 @@ const AlertsOverview = ({ alerts }) => {
           Recent Alerts
         </Typography>
         <List dense>
-          {recentAlerts.map((alert) => (
+          {recentAlerts && recentAlerts.map((alert) => (
             <ListItem key={alert.id} sx={{ px: 0, py: 0.5 }}>
               <ListItemText
                 primary={
@@ -162,7 +131,7 @@ const AlertsOverview = ({ alerts }) => {
             </ListItem>
           ))}
         </List>
-      </CardContent>
+      </Content>
     </Card>
   );
 };

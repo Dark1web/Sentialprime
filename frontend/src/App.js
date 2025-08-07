@@ -13,6 +13,8 @@ import FactCheckCenter from './components/FactCheck/FactCheckCenter';
 import NavigationAssistant from './components/Navigation/NavigationAssistant';
 import ARSimulation from './components/AR/ARSimulation';
 import AnalyticsPage from './components/Analytics/AnalyticsPage';
+import LandingPage from './components/Landing/LandingPage';
+import AccountPage from './components/Account/AccountPage';
 
 // Loading component
 const LoadingScreen = () => (
@@ -47,47 +49,48 @@ const AppContent = () => {
     return <LoadingScreen />;
   }
 
-  // Show login page if user is not authenticated
-  if (!user) {
-    return <LoginPage />;
-  }
-
   // Show main app if user is authenticated
-  return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Sidebar */}
-      <Sidebar open={sidebarOpen} onToggle={handleSidebarToggle} />
-      
-      {/* Main Content */}
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        {/* Navbar */}
-        <Navbar onMenuClick={handleSidebarToggle} />
-        
-        {/* Page Content */}
-        <Box 
-          component="main" 
-          sx={{ 
-            flexGrow: 1, 
-            p: 3, 
-            overflow: 'auto',
-            backgroundColor: '#f5f5f5'
-          }}
-        >
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/misinformation" element={<MisinformationMonitor />} />
-            <Route path="/triage" element={<TriageCenter />} />
-            <Route path="/network" element={<NetworkMap />} />
-            <Route path="/factcheck" element={<FactCheckCenter />} />
-            <Route path="/navigation" element={<NavigationAssistant />} />
-            <Route path="/ar-simulation" element={<ARSimulation />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
+  if (user) {
+    return (
+      <Box sx={{ display: 'flex', height: '100vh' }}>
+        <Sidebar open={sidebarOpen} onToggle={handleSidebarToggle} />
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+          <Navbar onMenuClick={handleSidebarToggle} />
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              overflow: 'auto',
+              backgroundColor: '#f5f5f5',
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/misinformation" element={<MisinformationMonitor />} />
+              <Route path="/triage" element={<TriageCenter />} />
+              <Route path="/network" element={<NetworkMap />} />
+              <Route path="/factcheck" element={<FactCheckCenter />} />
+              <Route path="/navigation" element={<NavigationAssistant />} />
+              <Route path="/ar-simulation" element={<ARSimulation />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/account" element={<AccountPage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    );
+  }
+
+  // Show landing page and login page if user is not authenticated
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 

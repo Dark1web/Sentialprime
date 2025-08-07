@@ -19,46 +19,16 @@ import {
   CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
 
-const SystemMetrics = () => {
+const SystemMetrics = ({ systemData }) => {
   const [lastUpdate, setLastUpdate] = React.useState(new Date());
 
-  const systemData = {
-    cpu: {
-      usage: 68,
-      cores: 8,
-      load: [65, 72, 68, 70, 69],
-      status: 'normal'
-    },
-    memory: {
-      used: 12.4,
-      total: 16,
-      usage: 77.5,
-      status: 'warning'
-    },
-    storage: {
-      used: 240,
-      total: 500,
-      usage: 48,
-      status: 'good'
-    },
-    network: {
-      inbound: 145.2,
-      outbound: 89.7,
-      latency: 23,
-      status: 'good'
-    },
-    services: {
-      total: 12,
-      running: 11,
-      failed: 1,
-      status: 'warning'
-    },
-    database: {
-      connections: 89,
-      maxConnections: 200,
-      queryTime: 0.245,
-      status: 'good'
-    }
+  const data = systemData || {
+    cpu: {},
+    memory: {},
+    storage: {},
+    network: {},
+    services: {},
+    database: {}
   };
 
   const getStatusColor = (status) => {
@@ -127,7 +97,7 @@ const SystemMetrics = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip 
               icon={<CheckCircleIcon />}
-              label="94% Health" 
+              label={`${data.systemHealth || 'N/A'}% Health`} 
               color="success" 
               size="small"
             />
@@ -139,7 +109,6 @@ const SystemMetrics = () => {
           </Box>
         </Box>
 
-        {/* System Health Overview */}
         <Box sx={{ 
           display: 'grid', 
           gridTemplateColumns: '1fr 1fr', 
@@ -151,7 +120,7 @@ const SystemMetrics = () => {
         }}>
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6" color="success.main" sx={{ fontWeight: 'bold' }}>
-              {systemData.services.running}/{systemData.services.total}
+              {`${data.services.running || 'N/A'}/${data.services.total || 'N/A'}`}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Services Running
@@ -159,7 +128,7 @@ const SystemMetrics = () => {
           </Box>
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6" color="info.main" sx={{ fontWeight: 'bold' }}>
-              {systemData.network.latency}ms
+              {`${data.network.latency || 'N/A'}ms`}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Avg Latency
@@ -167,47 +136,45 @@ const SystemMetrics = () => {
           </Box>
         </Box>
 
-        {/* Detailed Metrics */}
         <MetricItem
           icon={SpeedIcon}
           label="CPU Usage"
-          value={systemData.cpu.usage}
+          value={data.cpu.usage || 'N/A'}
           unit="%"
-          usage={systemData.cpu.usage}
-          status={systemData.cpu.status}
-          details={`${systemData.cpu.cores} cores, load avg: ${systemData.cpu.load.slice(-1)[0]}%`}
+          usage={data.cpu.usage}
+          status={data.cpu.status}
+          details={`${data.cpu.cores || 'N/A'} cores, load avg: ${data.cpu.load?.slice(-1)[0] || 'N/A'}%`}
         />
 
         <MetricItem
           icon={MemoryIcon}
           label="Memory"
-          value={systemData.memory.used}
-          unit={`GB / ${systemData.memory.total}GB`}
-          usage={systemData.memory.usage}
-          status={systemData.memory.status}
-          details={`${systemData.memory.usage.toFixed(1)}% utilized`}
+          value={data.memory.used || 'N/A'}
+          unit={`GB / ${data.memory.total || 'N/A'}GB`}
+          usage={data.memory.usage}
+          status={data.memory.status}
+          details={`${(data.memory.usage || 0).toFixed(1)}% utilized`}
         />
 
         <MetricItem
           icon={StorageIcon}
           label="Storage"
-          value={systemData.storage.used}
-          unit={`GB / ${systemData.storage.total}GB`}
-          usage={systemData.storage.usage}
-          status={systemData.storage.status}
-          details={`${(systemData.storage.total - systemData.storage.used)}GB available`}
+          value={data.storage.used || 'N/A'}
+          unit={`GB / ${data.storage.total || 'N/A'}GB`}
+          usage={data.storage.usage}
+          status={data.storage.status}
+          details={`${(data.storage.total - data.storage.used) || 'N/A'}GB available`}
         />
 
         <MetricItem
           icon={CloudQueueIcon}
           label="Network I/O"
-          value={`↓${systemData.network.inbound} / ↑${systemData.network.outbound}`}
+          value={`↓${data.network.inbound || 'N/A'} / ↑${data.network.outbound || 'N/A'}`}
           unit="MB/s"
-          status={systemData.network.status}
-          details={`Latency: ${systemData.network.latency}ms`}
+          status={data.network.status}
+          details={`Latency: ${data.network.latency || 'N/A'}ms`}
         />
 
-        {/* Database Metrics */}
         <Box sx={{ 
           mt: 2, 
           p: 2, 
@@ -223,11 +190,11 @@ const SystemMetrics = () => {
                 Active Connections
               </Typography>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                {systemData.database.connections}/{systemData.database.maxConnections}
+                {`${data.database.connections || 'N/A'}/${data.database.maxConnections || 'N/A'}`}
               </Typography>
               <LinearProgress
                 variant="determinate"
-                value={(systemData.database.connections / systemData.database.maxConnections) * 100}
+                value={((data.database.connections / data.database.maxConnections) * 100) || 0}
                 color="info"
                 sx={{ height: 4, borderRadius: 2, mt: 0.5 }}
               />
@@ -237,7 +204,7 @@ const SystemMetrics = () => {
                 Avg Query Time
               </Typography>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                {systemData.database.queryTime}s
+                {`${data.database.queryTime || 'N/A'}s`}
               </Typography>
               <Typography variant="caption" color="success.main">
                 ✓ Within normal range
@@ -246,7 +213,6 @@ const SystemMetrics = () => {
           </Box>
         </Box>
 
-        {/* Last Update */}
         <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block', textAlign: 'center' }}>
           Last updated: {lastUpdate.toLocaleTimeString()}
         </Typography>

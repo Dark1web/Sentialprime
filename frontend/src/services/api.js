@@ -40,6 +40,26 @@ export const fetchDashboardData = async () => {
   }
 };
 
+export const fetchRecentAlerts = async (params = {}) => {
+  try {
+    const response = await api.get('/alerts/recent', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch recent alerts:', error);
+    throw error;
+  }
+}
+
+export const fetchSystemMetrics = async () => {
+  try {
+    const response = await api.get('/system/metrics');
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch system metrics:', error);
+    throw error;
+  }
+}
+
 // Misinformation API calls
 export const analyzeMisinformation = async (postData) => {
   try {
@@ -328,11 +348,10 @@ export const apiService = {
     try {
       const response = await api.get('/health');
       return response.data;
-    } catch (error) {
+    } catch (error)
       console.error('Failed to fetch health check:', error);
       throw error;
     }
   }
 };
-
 export default api;

@@ -26,7 +26,14 @@ import NetworkStatus from './components/NetworkStatus';
 import SystemMetrics from './components/SystemMetrics';
 import RealTimeMap from './components/RealTimeMap';
 import TrendChart from './components/TrendChart';
-import { fetchDashboardData } from '../../services/api';
+import { 
+  fetchDashboardData, 
+  fetchRecentAlerts, 
+  fetchMisinformationFeed, 
+  fetchTriageQueue, 
+  fetchNetworkOutages,
+  fetchSystemMetrics
+} from '../../services/api';
 
 const MetricCard = ({ title, value, change, changeType, icon: Icon, color = 'primary' }) => {
   const isPositive = changeType === 'positive';
@@ -75,7 +82,7 @@ const MetricCard = ({ title, value, change, changeType, icon: Icon, color = 'pri
 };
 
 const Dashboard = () => {
-  const { data: dashboardData, isLoading, refetch } = useQuery(
+  const { data: dashboardData, isLoading, refetch: refetchDashboardData } = useQuery(
     'dashboard',
     fetchDashboardData,
     {
@@ -84,8 +91,58 @@ const Dashboard = () => {
     }
   );
 
+  const { data: recentAlerts, refetch: refetchRecentAlerts } = useQuery(
+    'recentAlerts',
+    fetchRecentAlerts,
+    {
+      refetchInterval: 30000,
+      retry: 3
+    }
+  );
+
+  const { data: misinformationFeed, refetch: refetchMisinformationFeed } = useQuery(
+    'misinformationFeed',
+    () => fetchMisinformationFeed({ ai_filter: true, limit: 10 }),
+    {
+      refetchInterval: 5 * 60 * 1000,
+      retry: 3
+    }
+  );
+
+  const { data: triageQueue, refetch: refetchTriageQueue } = useQuery(
+    'triageQueue',
+    fetchTriageQueue,
+    {
+      refetchInterval: 30000,
+      retry: 3
+    }
+  );
+
+  const { data: networkOutages, refetch: refetchNetworkOutages } = useQuery(
+    'networkOutages',
+    fetchNetworkOutages,
+    {
+      refetchInterval: 60000,
+      retry: 3
+    }
+  );
+
+  const { data: systemMetrics, refetch: refetchSystemMetrics } = useQuery(
+    'systemMetrics',
+    fetchSystemMetrics,
+    {
+      refetchInterval: 15000,
+      retry: 3
+    }
+  );
+
   const handleRefresh = () => {
-    refetch();
+    refetchDashboardData();
+    refetchRecentAlerts();
+    refetchMisinformationFeed();
+    refetchTriageQueue();
+    refetchNetworkOutages();
+    refetchSystemMetrics();
   };
 
   // Mock data for demonstration
@@ -233,27 +290,27 @@ const Dashboard = () => {
           <Grid container spacing={3}>
             {/* Alerts Overview */}
             <Grid item xs={12}>
-              <AlertsOverview alerts={data.alerts} />
+              <AlertsOverview alerts={data.alerts} recentAlerts={recentAlerts} />
             </Grid>
 
             {/* Recent Misinformation */}
             <Grid item xs={12}>
-              <MisinformationFeed />
+              <MisinformationFeed misinformationFeed={misinformationFeed} />
             </Grid>
 
             {/* Triage Queue */}
             <Grid item xs={12}>
-              <TriageQueue />
+              <TriageQueue triageRequests={triageQueue} />
             </Grid>
 
             {/* Network Status */}
             <Grid item xs={12}>
-              <NetworkStatus />
+              <NetworkStatus networkRegions={networkOutages} />
             </Grid>
 
             {/* System Metrics */}
             <Grid item xs={12}>
-              <SystemMetrics />
+              <SystemMetrics systemData={systemMetrics} />
             </Grid>
           </Grid>
         </Grid>

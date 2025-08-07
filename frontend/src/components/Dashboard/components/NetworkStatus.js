@@ -7,7 +7,6 @@ import {
   Chip,
   List,
   ListItem,
-  ListItemText,
   LinearProgress,
   IconButton
 } from '@mui/material';
@@ -20,59 +19,8 @@ import {
   Warning as WarningIcon
 } from '@mui/icons-material';
 
-const NetworkStatus = () => {
-  const networkRegions = [
-    {
-      id: 1,
-      name: "Delhi Central",
-      connectivityScore: 0.85,
-      status: "degraded",
-      affectedUsers: 15420,
-      avgSpeed: 24.5,
-      outages: 3,
-      lastUpdate: "5 mins ago"
-    },
-    {
-      id: 2,
-      name: "Mumbai Suburban",
-      connectivityScore: 0.12,
-      status: "offline",
-      affectedUsers: 89300,
-      avgSpeed: 0.8,
-      outages: 12,
-      lastUpdate: "2 mins ago"
-    },
-    {
-      id: 3,
-      name: "Bangalore Tech Hub",
-      connectivityScore: 0.95,
-      status: "online",
-      affectedUsers: 0,
-      avgSpeed: 78.2,
-      outages: 0,
-      lastUpdate: "1 min ago"
-    },
-    {
-      id: 4,
-      name: "Chennai Industrial",
-      connectivityScore: 0.68,
-      status: "degraded",
-      affectedUsers: 8750,
-      avgSpeed: 18.3,
-      outages: 2,
-      lastUpdate: "8 mins ago"
-    },
-    {
-      id: 5,
-      name: "Kolkata Metro",
-      connectivityScore: 0.42,
-      status: "poor",
-      affectedUsers: 23100,
-      avgSpeed: 8.7,
-      outages: 5,
-      lastUpdate: "3 mins ago"
-    }
-  ];
+const NetworkStatus = ({ networkRegions }) => {
+  const regions = networkRegions || [];
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -84,7 +32,7 @@ const NetworkStatus = () => {
     }
   };
 
-  const getStatusIcon = (status, score) => {
+  const getStatusIcon = (status) => {
     switch (status) {
       case 'online': return <SignalWifi4BarIcon color="success" />;
       case 'degraded': return <SignalWifi2BarIcon color="warning" />;
@@ -103,10 +51,10 @@ const NetworkStatus = () => {
   };
 
   const overallStats = {
-    totalRegions: networkRegions.length,
-    healthyRegions: networkRegions.filter(r => r.status === 'online').length,
-    affectedUsers: networkRegions.reduce((sum, r) => sum + r.affectedUsers, 0),
-    activeOutages: networkRegions.reduce((sum, r) => sum + r.outages, 0)
+    totalRegions: regions.length,
+    healthyRegions: regions.filter(r => r.status === 'online').length,
+    affectedUsers: regions.reduce((sum, r) => sum + (r.affectedUsers || 0), 0),
+    activeOutages: regions.reduce((sum, r) => sum + (r.outages || 0), 0)
   };
 
   return (
@@ -129,11 +77,10 @@ const NetworkStatus = () => {
           </Box>
         </Box>
 
-        {/* Overall Statistics */}
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mb: 2 }}>
           <Box sx={{ textAlign: 'center', p: 1, backgroundColor: 'rgba(76, 175, 80, 0.1)', borderRadius: 1 }}>
             <Typography variant="h6" color="success.main" sx={{ fontWeight: 'bold' }}>
-              {overallStats.healthyRegions}/{overallStats.totalRegions}
+              {`${overallStats.healthyRegions}/${overallStats.totalRegions}`}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Healthy Regions
@@ -141,7 +88,7 @@ const NetworkStatus = () => {
           </Box>
           <Box sx={{ textAlign: 'center', p: 1, backgroundColor: 'rgba(244, 67, 54, 0.1)', borderRadius: 1 }}>
             <Typography variant="h6" color="error.main" sx={{ fontWeight: 'bold' }}>
-              {(overallStats.affectedUsers / 1000).toFixed(0)}K
+              {`${(overallStats.affectedUsers / 1000).toFixed(0)}K`}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Affected Users
@@ -150,7 +97,7 @@ const NetworkStatus = () => {
         </Box>
 
         <List dense sx={{ maxHeight: 320, overflowY: 'auto' }}>
-          {networkRegions.map((region) => (
+          {regions.map((region) => (
             <ListItem 
               key={region.id} 
               sx={{ 
@@ -161,30 +108,28 @@ const NetworkStatus = () => {
               }}
             >
               <Box sx={{ width: '100%' }}>
-                {/* Header */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {getStatusIcon(region.status, region.connectivityScore)}
+                    {getStatusIcon(region.status)}
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
                       {region.name}
                     </Typography>
                   </Box>
                   <Chip 
-                    label={region.status.toUpperCase()}
+                    label={(region.status || '').toUpperCase()}
                     size="small"
                     color={getStatusColor(region.status)}
                     sx={{ fontSize: '0.7rem', height: 20 }}
                   />
                 </Box>
 
-                {/* Connectivity Score */}
                 <Box sx={{ mb: 1 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                     <Typography variant="caption" color="text.secondary">
                       Connectivity: {getConnectivityLevel(region.connectivityScore)}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {(region.connectivityScore * 100).toFixed(0)}%
+                      {`${(region.connectivityScore * 100).toFixed(0)}%`}
                     </Typography>
                   </Box>
                   <LinearProgress
@@ -194,15 +139,14 @@ const NetworkStatus = () => {
                     sx={{ height: 6, borderRadius: 3 }}
                   />
                 </Box>
-
-                {/* Metrics */}
+                
                 <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                   <Box>
                     <Typography variant="caption" color="text.secondary" display="block">
                       Avg Speed
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {region.avgSpeed} Mbps
+                      {`${region.avgSpeed} Mbps`}
                     </Typography>
                   </Box>
                   <Box>
@@ -227,16 +171,14 @@ const NetworkStatus = () => {
                   </Box>
                 </Box>
 
-                {/* Last Update */}
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                  Updated {region.lastUpdate}
+                  {`Updated ${region.lastUpdate}`}
                 </Typography>
               </Box>
             </ListItem>
           ))}
         </List>
 
-        {/* Summary Alert */}
         {overallStats.activeOutages > 5 && (
           <Box sx={{ 
             mt: 2, 
@@ -250,8 +192,7 @@ const NetworkStatus = () => {
               ⚠️ Multiple network outages detected
             </Typography>
             <Typography variant="body2" sx={{ mt: 0.5 }}>
-              {overallStats.activeOutages} active outages affecting {(overallStats.affectedUsers / 1000).toFixed(0)}K users. 
-              Priority restoration in progress.
+              {`${overallStats.activeOutages} active outages affecting ${(overallStats.affectedUsers / 1000).toFixed(0)}K users. Priority restoration in progress.`}
             </Typography>
           </Box>
         )}

@@ -21,70 +21,7 @@ import {
   Assignment as AssignmentIcon
 } from '@mui/icons-material';
 
-const TriageQueue = () => {
-  const triageRequests = [
-    {
-      id: 1,
-      message: "House flooding rapidly, water level rising, trapped on second floor with elderly mother",
-      location: "Riverside District, Delhi",
-      urgencyScore: 0.95,
-      triageLevel: "CRITICAL",
-      resourceRequired: ["rescue", "medical"],
-      estimatedResponse: "5-10 minutes",
-      timestamp: "2 mins ago",
-      isMedical: true,
-      status: "assigned"
-    },
-    {
-      id: 2,
-      message: "Chest pain and difficulty breathing, can't reach hospital due to blocked roads",
-      location: "Central Mumbai",
-      urgencyScore: 0.88,
-      triageLevel: "CRITICAL",
-      resourceRequired: ["medical", "transportation"],
-      estimatedResponse: "3-8 minutes",
-      timestamp: "5 mins ago",
-      isMedical: true,
-      status: "pending"
-    },
-    {
-      id: 3,
-      message: "Family of 6 without food and water for 2 days, children getting weak",
-      location: "Suburban Bangalore",
-      urgencyScore: 0.72,
-      triageLevel: "HIGH",
-      resourceRequired: ["food_water", "medical"],
-      estimatedResponse: "30-60 minutes",
-      timestamp: "8 mins ago",
-      isMedical: false,
-      status: "pending"
-    },
-    {
-      id: 4,
-      message: "Building showing cracks after earthquake, residents evacuating",
-      location: "Tech City, Hyderabad",
-      urgencyScore: 0.65,
-      triageLevel: "HIGH",
-      resourceRequired: ["rescue", "shelter"],
-      estimatedResponse: "45-90 minutes",
-      timestamp: "12 mins ago",
-      isMedical: false,
-      status: "in_progress"
-    },
-    {
-      id: 5,
-      message: "Power outage affecting entire neighborhood, need communication support",
-      location: "Residential Area, Chennai",
-      urgencyScore: 0.35,
-      triageLevel: "MEDIUM",
-      resourceRequired: ["communication"],
-      estimatedResponse: "2-4 hours",
-      timestamp: "18 mins ago",
-      isMedical: false,
-      status: "pending"
-    }
-  ];
-
+const TriageQueue = ({ triageRequests }) => {
   const getUrgencyColor = (level) => {
     switch (level) {
       case 'CRITICAL': return 'error';
@@ -111,10 +48,10 @@ const TriageQueue = () => {
   };
 
   const queueStats = {
-    total: triageRequests.length,
-    critical: triageRequests.filter(r => r.triageLevel === 'CRITICAL').length,
-    pending: triageRequests.filter(r => r.status === 'pending').length,
-    avgResponseTime: '24 minutes'
+    total: triageRequests?.length || 0,
+    critical: triageRequests?.filter(r => r.triageLevel === 'CRITICAL').length || 0,
+    pending: triageRequests?.filter(r => r.status === 'pending').length || 0,
+    avgResponseTime: '24 minutes' // This should be calculated from data
   };
 
   return (
@@ -161,7 +98,7 @@ const TriageQueue = () => {
         </Box>
 
         <List dense sx={{ maxHeight: 350, overflowY: 'auto' }}>
-          {triageRequests.map((request) => (
+          {triageRequests && triageRequests.map((request) => (
             <ListItem 
               key={request.id} 
               sx={{ 

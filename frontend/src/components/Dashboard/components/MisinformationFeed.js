@@ -19,43 +19,29 @@ import {
   MoreVert as MoreVertIcon
 } from '@mui/icons-material';
 
-const MisinformationFeed = () => {
+const MisinformationFeed = ({ misinformationFeed }) => {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAINews = async () => {
-      try {
-        const response = await fetch('/api/live/news/disaster-feed?ai_filter=true&limit=10');
-        const data = await response.json();
-        
-        if (response.ok && data.articles) {
-          const aiEnhancedPosts = data.articles.slice(0, 4).map((article, index) => ({
-            id: index + 1,
-            text: article.title || article.description || 'No description available',
-            panicScore: article.ai_analysis?.misinformation_risk === 'high' ? 0.8 : 
-                       article.ai_analysis?.misinformation_risk === 'medium' ? 0.5 : 0.2,
-            confidence: (article.ai_analysis?.credibility_score || 70) / 100,
-            isFlaged: article.ai_analysis?.misinformation_risk === 'high',
-            source: article.source || 'AI News',
-            timestamp: new Date().toLocaleTimeString(),
-            shareCount: Math.floor(Math.random() * 1000),
-            aiEnhanced: true,
-            disasterType: article.ai_analysis?.disaster_type || 'general'
-          }));
-          setNewsData(aiEnhancedPosts);
-        }
-      } catch (error) {
-        console.error('Failed to fetch AI news:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAINews();
-    const interval = setInterval(fetchAINews, 5 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
+    if (misinformationFeed && misinformationFeed.articles) {
+      const aiEnhancedPosts = misinformationFeed.articles.slice(0, 4).map((article, index) => ({
+        id: index + 1,
+        text: article.title || article.description || 'No description available',
+        panicScore: article.ai_analysis?.misinformation_risk === 'high' ? 0.8 : 
+                    article.ai_analysis?.misinformation_risk === 'medium' ? 0.5 : 0.2,
+        confidence: (article.ai_analysis?.credibility_score || 70) / 100,
+        isFlaged: article.ai_analysis?.misinformation_risk === 'high',
+        source: article.source || 'AI News',
+        timestamp: new Date().toLocaleTimeString(),
+        shareCount: Math.floor(Math.random() * 1000),
+        aiEnhanced: true,
+        disasterType: article.ai_analysis?.disaster_type || 'general'
+      }));
+      setNewsData(aiEnhancedPosts);
+    }
+    setLoading(false);
+  }, [misinformationFeed]);
 
   const misinformationPosts = newsData.length > 0 ? newsData : [
     {
