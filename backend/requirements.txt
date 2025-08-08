@@ -3,3 +3,16 @@ uvicorn
 axios
 newspaper3k
 snscrape
+Mastodon.py
+feedparser
+beautifulsoup4
+requests
+geopy
+sentinelhub
+Pillow
+numpy
+huggingface_hub
+ultralytics
+torch
+torchvision
+torchaudio

@@ -196,7 +196,7 @@ export const factCheckClaim = async (claimData) => {
   }
 };
 
-export const fetchTrendingClaims = async (params = {}) => {
+export const fetchTrendingClaims = async (params = {}) => {.
   try {
     const response = await api.get('/factcheck/trending', { params });
     return response.data;
@@ -348,10 +348,11 @@ export const apiService = {
     try {
       const response = await api.get('/health');
       return response.data;
-    } catch (error)
+    } catch (error) {
       console.error('Failed to fetch health check:', error);
       throw error;
     }
   }
 };
+
 export default api;

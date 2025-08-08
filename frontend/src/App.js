@@ -14,7 +14,6 @@ import NavigationAssistant from './components/Navigation/NavigationAssistant';
 import ARSimulation from './components/AR/ARSimulation';
 import AnalyticsPage from './components/Analytics/AnalyticsPage';
 import LandingPage from './components/Landing/LandingPage';
-import AccountPage from './components/Account/AccountPage';
 
 // Loading component
 const LoadingScreen = () => (
@@ -75,7 +74,6 @@ const AppContent = () => {
               <Route path="/navigation" element={<NavigationAssistant />} />
               <Route path="/ar-simulation" element={<ARSimulation />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
-              <Route path="/account" element={<AccountPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </Box>

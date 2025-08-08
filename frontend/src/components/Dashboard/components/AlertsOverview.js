@@ -131,7 +131,7 @@ const AlertsOverview = ({ alerts, recentAlerts }) => {
             </ListItem>
           ))}
         </List>
-      </Content>
+      </CardContent>
     </Card>
   );
 };
