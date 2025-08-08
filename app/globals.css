@@ -1,0 +1,326 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import map-specific styles */
+@import '../styles/map.css';
+
+/* Enhanced smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Account for fixed header */
+}
+
+/* Enhanced smooth scrolling with custom easing */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
+  * {
+    scroll-behavior: smooth;
+  }
+
+  /* Smooth scrolling for anchor links */
+  a[href^="#"] {
+    scroll-behavior: smooth;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Enhanced button hover effects */
+  button, .btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Button click feedback */
+  button:active, .btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Ripple effect for buttons */
+  button::before, .btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+    pointer-events: none;
+  }
+
+  button:active::before, .btn:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Smooth section transitions */
+  section {
+    scroll-margin-top: 80px;
+  }
+
+  /* Navigation highlight effect */
+  .nav-highlight {
+    position: relative;
+  }
+
+  .nav-highlight::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    transition: width 0.3s ease;
+  }
+
+  .nav-highlight:hover::after {
+    width: 100%;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    scroll-behavior: auto;
+  }
+}
+
+@layer base {
+  :root {
+    /* Light theme colors - Emergency Services Palette */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 0 84% 60%; /* Emergency Red */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 0 84% 60%;
+    --radius: 0.5rem;
+    
+    /* Emergency Service Colors */
+    --emergency-red: 0 84% 60%;
+    --emergency-orange: 25 95% 53%;
+    --emergency-blue: 217 91% 60%;
+    --emergency-green: 142 76% 36%;
+    --warning-yellow: 45 93% 47%;
+    --critical-red: 0 100% 50%;
+    --safe-green: 120 100% 25%;
+    
+    /* Status Colors */
+    --status-operational: 142 76% 36%;
+    --status-warning: 45 93% 47%;
+    --status-critical: 0 84% 60%;
+    --status-unknown: 215 16% 47%;
+  }
+
+  .dark {
+    /* Dark theme colors - 24/7 Operations */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 0 72% 51%; /* Darker Emergency Red */
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 0 72% 51%;
+    
+    /* Emergency Service Colors - Dark Mode */
+    --emergency-red: 0 72% 51%;
+    --emergency-orange: 25 85% 43%;
+    --emergency-blue: 217 81% 50%;
+    --emergency-green: 142 66% 26%;
+    --warning-yellow: 45 83% 37%;
+    --critical-red: 0 90% 40%;
+    --safe-green: 120 90% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-md;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+  
+  /* Focus styles for accessibility */
+  .focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  
+  /* Emergency status indicators */
+  .status-operational {
+    @apply text-green-600 dark:text-green-400;
+  }
+  
+  .status-warning {
+    @apply text-yellow-600 dark:text-yellow-400;
+  }
+  
+  .status-critical {
+    @apply text-red-600 dark:text-red-400;
+  }
+  
+  .status-unknown {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+  
+  /* Emergency button styles */
+  .btn-emergency {
+    @apply bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-emergency:focus {
+    @apply ring-2 ring-red-500 ring-offset-2;
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: 0 0% 0%;
+      --ring: 0 0% 0%;
+    }
+    
+    .dark {
+      --border: 0 0% 100%;
+      --ring: 0 0% 100%;
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Print styles */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    body {
+      @apply text-black bg-white;
+    }
+  }
+}
+
+@layer components {
+  /* Emergency alert animations */
+  .pulse-emergency {
+    animation: pulse-emergency 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-emergency {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  
+  /* Loading spinner for AI processing */
+  .spinner-ai {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Gradient backgrounds */
+  .bg-emergency-gradient {
+    background: linear-gradient(135deg, hsl(var(--emergency-red)) 0%, hsl(var(--emergency-orange)) 100%);
+  }
+  
+  .bg-hero-gradient {
+    background: linear-gradient(135deg, hsl(var(--emergency-blue)) 0%, hsl(var(--emergency-red)) 50%, hsl(var(--emergency-orange)) 100%);
+  }
+  
+  /* Glass morphism effect */
+  .glass {
+    @apply backdrop-blur-md bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10;
+  }
+  
+  /* Emergency status badges */
+  .badge-operational {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+  }
+  
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+  }
+  
+  .badge-critical {
+    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+  }
+  
+  .badge-unknown {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400;
+  }
+}
